@@ -22,10 +22,6 @@ function setup() {
 	createCanvas(h, h);
 	rectMode(CENTER);
 
-	background = createSprite(h/2,h/2,10,10);
-	background.addImage(city);
-	background.scale = 2.2;
-
 	packageBody = Bodies.rectangle(-50, 80, 10, 10, {restitution : 1, isStatic : true});
 	World.add(world, packageBody);
 
@@ -52,6 +48,8 @@ function setup() {
 
 
 function draw() {
+  background(city);
+	
   rectMode(CENTER);
 
   helicopter.collide(wall);
