@@ -1,84 +1,64 @@
-var helicopterIMG, helicopter, packageD, wall, z, city, h, packageIMG;
-var packageBody, base, static;
+
 const Engine = Matter.Engine;
 const World = Matter.World;
 const Bodies = Matter.Bodies;
 const Body = Matter.Body;
 
-function preload()
-{
-	helicopterIMG = loadImage("helicopter.png");
+var h, helicopter, package, MatterPackage, ground, wall;
+var city, packageIMG, hImage;
+
+var gameState = "onHelicopter";
+
+
+function preload() {
+	city = loadImage("city.jpg");
+	hImage = loadImage("helicopter.png");
 	packageIMG = loadImage("package.png");
-	city = loadImage("city.jpg")
 }
 
+
 function setup() {
+	h = windowHeight;
+	createCanvas(h, h);
 
 	engine = Engine.create();
 	world = engine.world;
+	console.log(h)
 
-	h = windowHeight;
+	ground = Bodies.rectangle(h/2, h - 20, h, 20, {'isStatic' : true, 'restitution' : 1});
+	World.add(world, ground);
 
-	createCanvas(h, h);
-	rectMode(CENTER);
+	MatterPackage = Bodies.rectangle(-50, 50, 20, 20);
+	World.add(world, MatterPackage);
 
-	packageBody = Bodies.rectangle(-50, 80, 10, 10, {restitution : 1, isStatic : true});
-	World.add(world, packageBody);
+	wall = createSprite(h - 20, h/2, 20, h);
 
-	packageD = createSprite(-50, 80, 10,10);
-	packageD.addImage(packageIMG);
-	packageD.scale = 0.2;
+	package = createSprite(50, 50, 20, 20);
+	package.addImage(packageIMG);
+	package.scale = 0.9;
 
-	helicopter = createSprite(-50, 80, 10,10);
-	helicopter.addImage(helicopterIMG)
-	helicopter.scale = 0.6;
-	helicopter.velocityX = Math.round(random(4,7));
-
-	wall = createSprite(h - 10, h/2, 10, h);
-	//wall.visible = false;
-	
-	//Create a Ground
-	base = Bodies.rectangle(h/2, h/2, h, 20, {isStatic : true} );
- 	World.add(world, base);
-
-	Engine.run(engine);
-	z = 1;
-  
+	helicopter = createSprite(-50, 50, 20, 20);
+	helicopter.addImage(hImage);
+	helicopter.scale = 0.8;
+	helicopter.velocityX = 10;
 }
 
 
 function draw() {
-  background(city);
-	
-  rectMode(CENTER);
+	background(city);
+	Engine.update(engine);
 
-  helicopter.collide(wall);
+	if(gameState === "onHelicopter") {
+		MatterPackage.position.x = helicopter.x;
+	}
 
-  Engine.update(engine);
-
-  rect(packageBody.position.x,packageBody.position.y, 10, 10);
-  rect(base.position.x,base.position.y, h, 20);
-
-  if (z === 1) {
-	packageD.x = helicopter.x;
-  }
-
-  packageBody.position.x = packageD.x
-  packageD.y = packageBody.position.y;
-
-  downKey();
-  
-  drawSprites();
- 
+	package.x = MatterPackage.position.x;
+	package.y = MatterPackage.position.y;
 }
 
-function downKey () {
-
-	if (keyCode === DOWN_ARROW) {
-		Body.setStatic(packageBody , false);
-		z = 2;
+function keyPressed() {
+	if(keyCode === DOWN_ARROW) {
+		Body.setStatic(MatterPackage, false);
+		gamestate = "leftFromHelicopter";
 	}
 }
-
-
-
