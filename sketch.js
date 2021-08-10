@@ -59,6 +59,6 @@ function draw() {
 function keyPressed() {
 	if(keyCode === DOWN_ARROW) {
 		Body.setStatic(MatterPackage, false);
-		gamestate = "leftFromHelicopter";
+		gameState = "leftFromHelicopter";
 	}
 }
